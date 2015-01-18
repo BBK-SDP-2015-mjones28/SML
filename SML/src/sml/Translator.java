@@ -21,36 +21,44 @@ public class Translator {
 
 	private static final String SRC = "src";
 
-	public Translator(String fileName) {
+	public Translator(String fileName) 
+	{
 		this.fileName = SRC + "/" + fileName;
 	}
 
 	// translate the small program in the file into lab (the labels) and
 	// prog (the program)
 	// return "no errors were detected"
-	public boolean readAndTranslate(Labels lab, ArrayList<Instruction> prog) {
+	public boolean readAndTranslate(Labels lab, ArrayList<Instruction> prog) 
+	{
 
-		try (Scanner sc = new Scanner(new File(fileName))) {
+		try (Scanner sc = new Scanner(new File(fileName))) 
+		{
 			// Scanner attached to the file chosen by the user
-			labels = lab;
-			labels.reset();
-			program = prog;
-			program.clear();
+			labels = lab;		//points to the Machine label object (reference)
+			labels.reset();   //clears the array of strings if exist
+			program = prog; 	//points to the machine array list  <Instructions>
+			program.clear();	//clears the arraylist of instructions - starts from 0
 
 			try {
-				line = sc.nextLine();
-			} catch (NoSuchElementException ioE) {
-				return false;
-			}
+					line = sc.nextLine();		//read in next line from the fileName (passed as arg[0])
+				}
+				catch (NoSuchElementException ioE) 
+				{
+					return false;
+				}
 
 			// Each iteration processes line and reads the next line into line
-			while (line != null) {
+			while (line != null) 
+			{
 				// Store the label in label
-				String label = scan();
-
-				if (label.length() > 0) {
-					Instruction ins = getInstruction(label);
-					if (ins != null) {
+				String label = scan();  //returns  line broken down - just leaving label - e.g f0
+										//label already had first word removed - e.g f0
+				if (label.length() > 0) 
+				{
+					Instruction ins = getInstruction(label);  //returns a new type of instruction - add or Lin
+					if (ins != null)
+					{
 						labels.addLabel(label);
 						program.add(ins);
 					}
@@ -72,7 +80,8 @@ public class Translator {
 	// line should consist of an MML instruction, with its label already
 	// removed. Translate line into an instruction with label label
 	// and return the instruction
-	public Instruction getInstruction(String label) {
+	public Instruction getInstruction(String label) 
+	{
 		int s1; // Possible operands of the instruction
 		int s2;
 		int r;
@@ -81,17 +90,23 @@ public class Translator {
 		if (line.equals(""))
 			return null;
 
-		String ins = scan();
-		switch (ins) {
+		String ins = scan(); //retruns the word from line - add,Lin, mul, etc
+		
+		switch (ins) //chooses based upon add, lin etc
+		{
 		case "add":
-			r = scanInt();
-			s1 = scanInt();
-			s2 = scanInt();
-			return new AddInstruction(label, r, s1, s2);
+			r = scanInt(); //take the first word in line, after the add,lin,mul etc - e.g 20 which means register 20.
+			s1 = scanInt(); //take the next first word in line, register - e.g 6 which means register 6.
+			s2 = scanInt(); //take the now last word in line, register - e.g 3 which means register 6.
+			
+			return new AddInstruction(label, r, s1, s2);  //return a new Addinstruction object. 
+			
 		case "lin":
 			r = scanInt();
 			s1 = scanInt();
 			return new LinInstruction(label, r, s1);
+			
+			//needs default
 		}
 
 		// You will have to write code here for the other instructions.
@@ -103,24 +118,27 @@ public class Translator {
 	 * Return the first word of line and remove it from line. If there is no
 	 * word, return ""
 	 */
-	private String scan() {
-		line = line.trim();
+	private String scan() //keeps cutting down the word 'line' and returns 'WORD'
+	{
+		line = line.trim();   //trim white space
 		if (line.length() == 0)
 			return "";
 
 		int i = 0;
-		while (i < line.length() && line.charAt(i) != ' ' && line.charAt(i) != '\t') {
+		while (i < line.length() && line.charAt(i) != ' ' && line.charAt(i) != '\t')  //while no spaces or tabs or length less than i
+		{
 			i = i + 1;
 		}
-		String word = line.substring(0, i);
-		line = line.substring(i);
+		String word = line.substring(0, i); //create substring word = at first gap/tab in word
+		line = line.substring(i);  //here line has Word's length removed removed
 		return word;
 	}
 
 	// Return the first word of line as an integer. If there is
 	// any error, return the maximum int
-	private int scanInt() {
-		String word = scan();
+	private int scanInt() 
+	{
+		String word = scan(); 
 		if (word.length() == 0) {
 			return Integer.MAX_VALUE;
 		}

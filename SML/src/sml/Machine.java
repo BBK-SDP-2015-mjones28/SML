@@ -8,22 +8,22 @@ import lombok.Data;
  * The machine language interpreter
  */
 @Data
-public class Machine {
+public class Machine 
+{
 	// The labels in the SML program, in the order in which
 	// they appear (are defined) in the program
 
-	private Labels labels;
+	private Labels labels;  //holds array<string>
 
 	// The SML program, consisting of prog.size() instructions, each
 	// of class Instruction (or one of its subclasses)
 	private ArrayList<Instruction> prog;
 
 	// The registers of the SML machine
-	private Registers registers;
+	private Registers registers;  //holds an int[] array up to 32
 
 	// The program counter; it contains the index (in prog) of
 	// the next instruction to be executed.
-
 	private int pc;
 
 	{
@@ -35,8 +35,8 @@ public class Machine {
 	public static void main(String[] args) {
 
 		Machine m = new Machine();
-		Translator t = new Translator(args[0]);
-		t.readAndTranslate(m.getLabels(), m.getProg());
+		Translator t = new Translator(args[0]);  //gets file name
+		t.readAndTranslate(m.getLabels(), m.getProg()); //blank label object (array of strings) and array of blank Instructions
 
 		System.out.println("Here is the program; it has " + m.getProg().size() + " instructions.");
 		System.out.println(m);
@@ -47,12 +47,15 @@ public class Machine {
 
 		System.out.println("Values of registers at program termination:");
 		System.out.println(m.getRegisters() + ".");
+		
+		System.out.println("Reg 2: " + m.getRegisters().getRegister(2));  //confirms addition is working
 	}
 
 	// Print the program
 
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 		StringBuffer s = new StringBuffer();
 		for (int i = 0; i != getProg().size(); i++)
 			s.append(getProg().get(i) + "\n");
@@ -64,11 +67,12 @@ public class Machine {
 
 	public void execute() {
 		setPc(0);
-		setRegisters(new Registers());
-		while (getPc() < getProg().size()) {
-			Instruction ins = getProg().get(getPc());
-			setPc(getPc() + 1);
-			ins.execute(this);
+		setRegisters(new Registers());  //create a new register
+		while (getPc() < getProg().size()) 
+		{
+			Instruction ins = getProg().get(getPc());  //get array of instructions and select the counter equivalent instruction
+			setPc(getPc() + 1);  //increase the counter by one
+			ins.execute(this);   //Instruction.execute (this machine)
 		}
 	}
 }
