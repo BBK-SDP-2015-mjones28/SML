@@ -7,4 +7,5 @@ f5 sub 1  20 21
 f6 mul 2  20 1
 f7 mul 4  0  2
 f8 mul 3  4  5
+f9 div 6  5  4
 

@@ -114,6 +114,14 @@ public class Translator {
 			s2 = scanInt(); //take the now last word in line, register - e.g 3 which means register 6.
 			
 			return new MulInstruction(label, r, s1, s2);  //return a new MulInstruction object. 
+		
+	    case "div":
+			r = scanInt(); //take the first word in line, after the add,lin,mul etc - e.g 20 which means register 20.
+			s1 = scanInt(); //take the next first word in line, register - e.g 6 which means register 6.
+			s2 = scanInt(); //take the now last word in line, register - e.g 3 which means register 6.
+			
+			return new DivInstruction(label, r, s1, s2);  //return a new DivInstruction object. 	
+			
 			
 		case "lin":
 			r = scanInt();
