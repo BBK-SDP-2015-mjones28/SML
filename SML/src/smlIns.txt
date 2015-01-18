@@ -1,0 +1,8 @@
+f0 lin 20 6
+f1 lin 21 1
+f2 lin 22 1
+f3 add 20 21 22
+f4 add 0  20 22
+f5 sub 1  20 21
+
+

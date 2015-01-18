@@ -99,7 +99,14 @@ public class Translator {
 			s1 = scanInt(); //take the next first word in line, register - e.g 6 which means register 6.
 			s2 = scanInt(); //take the now last word in line, register - e.g 3 which means register 6.
 			
-			return new AddInstruction(label, r, s1, s2);  //return a new Addinstruction object. 
+			return new AddInstruction(label, r, s1, s2);  //return a new AddInstruction object. 
+	
+	    case "sub":
+			r = scanInt(); //take the first word in line, after the add,lin,mul etc - e.g 20 which means register 20.
+			s1 = scanInt(); //take the next first word in line, register - e.g 6 which means register 6.
+			s2 = scanInt(); //take the now last word in line, register - e.g 3 which means register 6.
+			
+			return new SubInstruction(label, r, s1, s2);  //return a new SubInstruction object. 
 			
 		case "lin":
 			r = scanInt();
