@@ -128,7 +128,11 @@ public class Translator {
 			s1 = scanInt();
 			return new LinInstruction(label, r, s1);
 			
-			//needs default
+		
+		case "out":
+			s1 = scanInt();
+			return new OutInstruction(label, s1);  //New Print to screen class - 
+			
 		}
 
 		// You will have to write code here for the other instructions.

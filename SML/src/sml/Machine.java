@@ -48,7 +48,6 @@ public class Machine
 		System.out.println("Values of registers at program termination:");
 		System.out.println(m.getRegisters() + ".");
 		
-		System.out.println("Reg 2: " + m.getRegisters().getRegister(2));  //confirms addition is working
 	}
 
 	// Print the program
