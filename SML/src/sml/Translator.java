@@ -86,6 +86,7 @@ public class Translator {
 		int s2;
 		int r;
 		int x;
+		String label2;
 
 		if (line.equals(""))
 			return null;
@@ -131,7 +132,13 @@ public class Translator {
 		
 		case "out":
 			s1 = scanInt();
-			return new OutInstruction(label, s1);  //New Print to screen class - 
+			return new OutInstruction(label, s1);  //New Print to screen class -
+			
+		case "bnz":
+			s1 = scanInt(); //take the next first word in line, register - e.g 6 which means register 6.
+			label2 = scan(); //take the now last word in line, Label2.
+			
+			return new BnzInstruction(label, s1, label2);  //return a new BnzInstruction object.
 			
 		}
 
