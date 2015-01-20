@@ -98,9 +98,7 @@ public class Translator {
 			returnString.append("Instruction");
 			System.out.println("DEBUG - String BUilder Class Name: " + returnString);  //Correctly adds Lin to Instruction
 			String className = returnString.toString(); //Class.forname needs a string not stringbuilder
-			System.out.println("DEBUG - Returned Class Name: " + className);  //now capitalised
-			
-		
+			System.out.println("DEBUG - Returned Class Name: " + className);  //now capitalised		
 			
 			
 			String sml = "sml."; //required to look up via the package - doesnt work without
@@ -151,14 +149,14 @@ public class Translator {
 					Object obj2 = con.newInstance(paramsToSend);  //create a new instance of the Instruction with the correct parameters identified
 					System.out.println("Debug - Instruction: " + con);
 			
-					//return the instruction - we could create new instance in the return but easier to read as is
+					//return the instruction - we could create new instance in the return but easier to read with Println
 				  return (Instruction)obj2;
 				} 
 			catch (ClassNotFoundException | SecurityException | InstantiationException |
 					IllegalArgumentException | IllegalAccessException | InvocationTargetException e) 			
 				{
 				
-				e.printStackTrace();
+					e.printStackTrace();
 				}
 			//Using Reflection -  remove calls to subclass, therefore remove the switch case
 			

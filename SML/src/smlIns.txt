@@ -8,4 +8,6 @@ f6 lin 6 3
 f7 div 7 1 6
 f8 mul 8 2 7
 f9 sub 8 8 2
-f10 bnz 8 f9
+f10 out 8
+f11 bnz 8 f9
+f12 out 8
