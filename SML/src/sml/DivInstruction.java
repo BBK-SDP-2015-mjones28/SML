@@ -15,7 +15,7 @@ public class DivInstruction extends Instruction
 
 	public DivInstruction(String label, String op) 
 	{
-		super(label, op); //calls the default superclass constructor
+		super(label, op); 
 	}
 
 	public DivInstruction(String label, int result, int op1, int op2) 
@@ -26,7 +26,7 @@ public class DivInstruction extends Instruction
 		this.op2 = op2;
 	}
 	
-	//	Division takes place and puts it in the result register - cannot divide by Zero accounted for - 
+	//	cannot divide by Zero accounted for - 
 	// sets the results register as zero rather than capturing the ArithmeticException
 	@Override
 	public void execute(Machine m) 

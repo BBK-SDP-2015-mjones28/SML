@@ -14,18 +14,18 @@ public class AddInstruction extends Instruction
 
 	public AddInstruction(String label, String op) 
 	{
-		super(label, op); //calls the default superclass constructor
+		super(label, op); 
 	}
 
 	public AddInstruction(String label, int result, int op1, int op2) {
-		this(label, "add");  //calls the default constructor  with string "add"
+		this(label, "add");  
 		this.result = result;
 		this.op1 = op1;
 		this.op2 = op2;
 	}
 
 	@Override
-	public void execute(Machine m) //addition takes place and puts it in the result register
+	public void execute(Machine m) 
 	{
 		int value1 = m.getRegisters().getRegister(op1);
 		int value2 = m.getRegisters().getRegister(op2);

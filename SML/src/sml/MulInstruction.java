@@ -14,19 +14,19 @@ public class MulInstruction extends Instruction
 
 	public MulInstruction(String label, String op) 
 	{
-		super(label, op); //calls the default superclass constructor
+		super(label, op); 
 	}
 
 	public MulInstruction(String label, int result, int op1, int op2) 
 	{
-		this(label, "mul");  //calls the default constructor  with string "mul"
+		this(label, "mul"); 
 		this.result = result;
 		this.op1 = op1;
 		this.op2 = op2;
 	}
 
 	@Override
-	public void execute(Machine m) //multiplies takes place and puts it in the result register
+	public void execute(Machine m) 
 	{
 		int value1 = m.getRegisters().getRegister(op1);
 		int value2 = m.getRegisters().getRegister(op2);

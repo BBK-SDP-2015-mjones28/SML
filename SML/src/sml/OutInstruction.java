@@ -13,17 +13,17 @@ public class OutInstruction extends Instruction
 
 	public OutInstruction(String label, String op) 
 	{
-		super(label, op); //calls the default superclass constructor
+		super(label, op); 
 	}
 
 	public OutInstruction(String label, int op1) 
 	{
-		this(label, "out");  //calls the default constructor with string "out"
+		this(label, "out");  
 		this.op1 = op1;	
 	}
 
 	@Override
-	public void execute(Machine m) //prints out the register passed
+	public void execute(Machine m)
 	{
 		System.out.println("Contents of Register: " + op1 + " = " + m.getRegisters().getRegister(op1));  //prints out 
 	}

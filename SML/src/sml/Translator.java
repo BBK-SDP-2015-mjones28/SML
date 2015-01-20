@@ -2,6 +2,8 @@ package sml;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -35,13 +37,13 @@ public class Translator {
 		try (Scanner sc = new Scanner(new File(fileName))) 
 		{
 			// Scanner attached to the file chosen by the user
-			labels = lab;		//points to the Machine label object (reference)
-			labels.reset();   //clears the array of strings if exist
-			program = prog; 	//points to the machine array list  <Instructions>
-			program.clear();	//clears the arraylist of instructions - starts from 0
+			labels = lab;		
+			labels.reset();   
+			program = prog; 	
+			program.clear();	
 
 			try {
-					line = sc.nextLine();		//read in next line from the fileName (passed as arg[0])
+					line = sc.nextLine();		
 				}
 				catch (NoSuchElementException ioE) 
 				{
@@ -51,12 +53,12 @@ public class Translator {
 			// Each iteration processes line and reads the next line into line
 			while (line != null) 
 			{
-				// Store the label in label
-				String label = scan();  //returns  line broken down - just leaving label - e.g f0
-										//label already had first word removed - e.g f0
+				
+				String label = scan();  
+										
 				if (label.length() > 0) 
 				{
-					Instruction ins = getInstruction(label);  //returns a new type of instruction - add or Lin
+					Instruction ins = getInstruction(label);  
 					if (ins != null)
 					{
 						labels.addLabel(label);
@@ -82,67 +84,76 @@ public class Translator {
 	// and return the instruction
 	public Instruction getInstruction(String label) 
 	{
-		int s1; // Possible operands of the instruction
-		int s2;
-		int r;
-		int x;
-		String label2;
-
-		if (line.equals(""))
-			return null;
-
-		String ins = scan(); //retruns the word from line - add,Lin, mul, etc
 		
-		switch (ins) //chooses based upon add, lin etc
-		{
-		case "add":
-			r = scanInt(); //take the first word in line, after the add,lin,mul etc - e.g 20 which means register 20.
-			s1 = scanInt(); //take the next first word in line, register - e.g 6 which means register 6.
-			s2 = scanInt(); //take the now last word in line, register - e.g 3 which means register 6.
+		if(line.equals(""))
+			{
+				return null;
+			} 
+		
+			//so we need to find the class of each instruction - get Lin to start		
+			String instruction = scan();
+			System.out.println("DEBUG - Initial Class Name: " + instruction);
+			StringBuilder returnString = new StringBuilder(instruction.substring(0, 1).toUpperCase() + instruction.substring(1));
+			returnString.append("Instruction");
+			System.out.println("DEBUG - String BUilder Class Name: " + returnString);  //Correctly adds Lin to Instruction
+			String className = returnString.toString(); //Class.forname needs a string not stringbuilder
+			System.out.println("DEBUG - Returned Class Name: " + className);  //now capitalised
 			
-			return new AddInstruction(label, r, s1, s2);  //return a new AddInstruction object. 
+		
+			
+			
+			String sml = "sml."; //required to look up via the package - doesnt work without
+			//class.forname - requires try/catch
+			try {
+				
+					Class<?> holdClass = Class.forName(sml + className); //error thrown on just class
+					System.out.println("DEBUG - HoldClass: " + holdClass);
+					Constructor<?> [] obj1 = holdClass.getConstructors();  //Instruction classes have more than one constructor
+					Constructor<?> con = obj1[1]; //should be the constructor with arguments not default.
+					
+					Object obj2 = con.newInstance("f0", 0, 6);  //Hardcoded test of new LinInstruction
+					System.out.println("Debug - Instruction: " + con);
+			
+				  return (Instruction)obj2;
+				} 
+			catch (ClassNotFoundException | SecurityException | InstantiationException |
+					IllegalArgumentException | IllegalAccessException | InvocationTargetException e) 			
+				{
+				
+				e.printStackTrace();
+				}
+			//Using Reflection -  remove calls to subclass, therefore remove the switch case
+			
 	
-	    case "sub":
-			r = scanInt(); //take the first word in line, after the add,lin,mul etc - e.g 20 which means register 20.
-			s1 = scanInt(); //take the next first word in line, register - e.g 6 which means register 6.
-			s2 = scanInt(); //take the now last word in line, register - e.g 3 which means register 6.
 			
-			return new SubInstruction(label, r, s1, s2);  //return a new SubInstruction object. 
+			//return new AddInstruction(label, r, s1, s2);   
+	
+	
+			
+			//return new SubInstruction(label, r, s1, s2);  
 		
-	    case "mul":
-			r = scanInt(); //take the first word in line, after the add,lin,mul etc - e.g 20 which means register 20.
-			s1 = scanInt(); //take the next first word in line, register - e.g 6 which means register 6.
-			s2 = scanInt(); //take the now last word in line, register - e.g 3 which means register 6.
+	 
 			
-			return new MulInstruction(label, r, s1, s2);  //return a new MulInstruction object. 
+			//return new MulInstruction(label, r, s1, s2);  
 		
-	    case "div":
-			r = scanInt(); //take the first word in line, after the add,lin,mul etc - e.g 20 which means register 20.
-			s1 = scanInt(); //take the next first word in line, register - e.g 6 which means register 6.
-			s2 = scanInt(); //take the now last word in line, register - e.g 3 which means register 6.
+	   
 			
-			return new DivInstruction(label, r, s1, s2);  //return a new DivInstruction object. 	
+			//retun new DivInstruction(label, r, s1, s2);  	
 			
-			
-		case "lin":
-			r = scanInt();
-			s1 = scanInt();
-			return new LinInstruction(label, r, s1);
 			
 		
-		case "out":
-			s1 = scanInt();
-			return new OutInstruction(label, s1);  //New Print to screen class -
+			//return new LinInstruction(label, r, s1);
 			
-		case "bnz":
-			s1 = scanInt(); //take the next first word in line, register - e.g 6 which means register 6.
-			label2 = scan(); //take the now last word in line, Label2.
+		
+	
+			//return new OutInstruction(label, s1);  
 			
-			return new BnzInstruction(label, s1, label2);  //return a new BnzInstruction object.
+	
 			
-		}
-
-		// You will have to write code here for the other instructions.
+			//return new BnzInstruction(label, s1, label2);  
+			
+	
+	
 
 		return null;
 	}
@@ -151,19 +162,19 @@ public class Translator {
 	 * Return the first word of line and remove it from line. If there is no
 	 * word, return ""
 	 */
-	private String scan() //keeps cutting down the word 'line' and returns 'WORD'
+	private String scan() 
 	{
-		line = line.trim();   //trim white space
+		line = line.trim(); 
 		if (line.length() == 0)
 			return "";
 
 		int i = 0;
-		while (i < line.length() && line.charAt(i) != ' ' && line.charAt(i) != '\t')  //while no spaces or tabs or length less than i
+		while (i < line.length() && line.charAt(i) != ' ' && line.charAt(i) != '\t')  
 		{
 			i = i + 1;
 		}
-		String word = line.substring(0, i); //create substring word = at first gap/tab in word
-		line = line.substring(i);  //here line has Word's length removed removed
+		String word = line.substring(0, i); 
+		line = line.substring(i);  
 		return word;
 	}
 
