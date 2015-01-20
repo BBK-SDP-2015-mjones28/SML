@@ -69,9 +69,11 @@ public class Translator {
 
 				try {
 					line = sc.nextLine();
-				} catch (NoSuchElementException ioE) {
+					} 
+				catch (NoSuchElementException ioE) 
+					{
 					return false;
-				}
+					}
 			}
 		} catch (IOException ioE) {
 			System.out.println("File: IO error " + ioE.getMessage());
@@ -91,106 +93,60 @@ public class Translator {
 				return null;
 			} 
 		
-			//so we need to find the class of each instruction - get Lin to start		
-			String instruction = scan();
-			System.out.println("DEBUG - Initial Class Name: " + instruction);
+			//Find the class of each instruction - obtain instruction, 
+			//capitalise the first Letter, and concatenate with "Instruction"		
+			String instruction = scan();		
 			StringBuilder returnString = new StringBuilder(instruction.substring(0, 1).toUpperCase() + instruction.substring(1));
-			returnString.append("Instruction");
-			System.out.println("DEBUG - String BUilder Class Name: " + returnString);  //Correctly adds Lin to Instruction
-			String className = returnString.toString(); //Class.forname needs a string not stringbuilder
-			System.out.println("DEBUG - Returned Class Name: " + className);  //now capitalised		
-			
+			returnString.append("Instruction");		
+			String className = returnString.toString(); 						
 			
 			String sml = "sml."; //required to look up via the package - doesnt work without
-			//class.forname - requires try/catch
+			
 			try {
 					String paramTempS;
 					int paramTempI;
-					Class<?> holdClass = Class.forName(sml + className); //error thrown on just class
-					System.out.println("DEBUG - HoldClass: " + holdClass);
-					Constructor<?> [] obj1 = holdClass.getConstructors();  //Instruction classes have more than one constructor
-					Constructor<?> con = obj1[1]; //should be the constructor with arguments not default.
-					
-					Parameter [] param = con.getParameters(); //need to identify parameters that this constructor takes
+					Class<?> holdClass = Class.forName(sml + className); 
+					Constructor<?> [] obj1 = holdClass.getConstructors();  
+					Constructor<?> con = obj1[1]; 					
+					Parameter [] param = con.getParameters(); 
 					int paramSize = param.length;
-					Object [] paramsToSend = new Object[paramSize]; //create an array of objects that we send to the Class, as they could be string or int
+					Object [] paramsToSend = new Object[paramSize]; 
 					
-					//Iterate through the parameter (param[]) and obtain the correct amount and type in order to sent to the instruction
+					//Iterate through the parameter (param[]) and obtain the correct amount
+					//and type in order to sent to the instruction class
+					//set first as parameter to send to class as Label
 					for (int i = 0; i < paramSize; i++)
-					{						
-						System.out.println("DEBUG - Param:" + i + " " + param[i].getType());
-						//set first as Label - as all 0 params = Label
+					{							
 						if (i == 0)
 						{
 							paramsToSend[0] = label;						
 						}
 						else if (i > 0)
 						{
-							//Extract the next object from the parameters types and then decide which one to return from scan/scanInt
+							//Extract the next object from the parameters types 
+							//decide which object type to return from scan/scanInt
 							if(param[i].getType().equals(java.lang.String.class))
 							{
 								paramTempS = scan();
 								paramsToSend[i] = paramTempS;
-								System.out.println("DEBUG - String identified");
 							}
 							else if (param[i].getType().equals(int.class))
 							{
 								paramTempI = scanInt();
 								paramsToSend[i] = paramTempI;
-								System.out.println("DEBUG - int identified");
-							}
-							else
-							{
-								System.out.println("DEBUG - No Types Found ");
-							}
+							}						
 						}
 					}
-					
-					Object obj2 = con.newInstance(paramsToSend);  //create a new instance of the Instruction with the correct parameters identified
-					System.out.println("Debug - Instruction: " + con);
-			
-					//return the instruction - we could create new instance in the return but easier to read with Println
-				  return (Instruction)obj2;
+								
+				  //return the instruction
+				  return (Instruction)con.newInstance(paramsToSend);
 				} 
-			catch (ClassNotFoundException | SecurityException | InstantiationException |
+				catch (ClassNotFoundException | SecurityException | InstantiationException |
 					IllegalArgumentException | IllegalAccessException | InvocationTargetException e) 			
-				{
-				
+				{				
 					e.printStackTrace();
 				}
-			//Using Reflection -  remove calls to subclass, therefore remove the switch case
-			
-	
-			
-			//return new AddInstruction(label, r, s1, s2);   
-	
-	
-			
-			//return new SubInstruction(label, r, s1, s2);  
 		
-	 
-			
-			//return new MulInstruction(label, r, s1, s2);  
-		
-	   
-			
-			//retun new DivInstruction(label, r, s1, s2);  	
-			
-			
-		
-			//return new LinInstruction(label, r, s1);
-			
-		
-	
-			//return new OutInstruction(label, s1);  
-			
-	
-			
-			//return new BnzInstruction(label, s1, label2);  
-			
-	
-	
-
 		return null;
 	}
 
