@@ -129,7 +129,7 @@ public class Translator {
 						else if (i > 0)
 						{
 							//Extract the next object from the parameters types and then decide which one to return from scan/scanInt
-							if(param[i].getType().equals("java.lang.String"))
+							if(param[i].getType().equals(java.lang.String.class))
 							{
 								paramTempS = scan();
 								paramsToSend[i] = paramTempS;
