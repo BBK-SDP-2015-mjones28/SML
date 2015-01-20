@@ -2,6 +2,8 @@ package sml;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -82,66 +84,75 @@ public class Translator {
 	// and return the instruction
 	public Instruction getInstruction(String label) 
 	{
-		int s1; // Possible operands of the instruction
-		int s2;
-		int r;
-		int x;
-		String label2;
-
-		if (line.equals(""))
-			return null;
-
-		String ins = scan(); 
 		
-		switch (ins) 
-		{
-		case "add":
-			r = scanInt(); 
-			s1 = scanInt(); 
-			s2 = scanInt(); 
+		if(line.equals(""))
+			{
+				return null;
+			} 
+		
+			//so we need to find the class of each instruction - get Lin to start		
+			String instruction = scan();
+			System.out.println("DEBUG - Initial Class Name: " + instruction);
+			StringBuilder returnString = new StringBuilder(instruction.substring(0, 1).toUpperCase() + instruction.substring(1));
+			returnString.append("Instruction");
+			System.out.println("DEBUG - String BUilder Class Name: " + returnString);  //Correctly adds Lin to Instruction
+			String className = returnString.toString(); //Class.forname needs a string not stringbuilder
+			System.out.println("DEBUG - Returned Class Name: " + className);  //now capitalised
 			
-			return new AddInstruction(label, r, s1, s2);   
+		
+			
+			
+			String sml = "sml."; //required to look up via the package - doesnt work without
+			//class.forname - requires try/catch
+			try {
+				
+					Class<?> holdClass = Class.forName(sml + className); //error thrown on just class
+					System.out.println("DEBUG - HoldClass: " + holdClass);
+					Constructor<?> [] obj1 = holdClass.getConstructors();  //Instruction classes have more than one constructor
+					Constructor<?> con = obj1[1]; //should be the constructor with arguments not default.
+					
+					Object obj2 = con.newInstance("f0", 0, 6);  //Hardcoded test of new LinInstruction
+					System.out.println("Debug - Instruction: " + con);
+			
+				  return (Instruction)obj2;
+				} 
+			catch (ClassNotFoundException | SecurityException | InstantiationException |
+					IllegalArgumentException | IllegalAccessException | InvocationTargetException e) 			
+				{
+				
+				e.printStackTrace();
+				}
+			//Using Reflection -  remove calls to subclass, therefore remove the switch case
+			
 	
-	    case "sub":
-			r = scanInt(); 
-			s1 = scanInt(); 
-			s2 = scanInt(); 
 			
-			return new SubInstruction(label, r, s1, s2);  
+			//return new AddInstruction(label, r, s1, s2);   
+	
+	
+			
+			//return new SubInstruction(label, r, s1, s2);  
 		
-	    case "mul":
-			r = scanInt(); 
-			s1 = scanInt(); 
-			s2 = scanInt(); 
+	 
 			
-			return new MulInstruction(label, r, s1, s2);  
+			//return new MulInstruction(label, r, s1, s2);  
 		
-	    case "div":
-			r = scanInt(); 
-			s1 = scanInt();
-			s2 = scanInt();
+	   
 			
-			return new DivInstruction(label, r, s1, s2);  	
+			//retun new DivInstruction(label, r, s1, s2);  	
 			
-			
-		case "lin":
-			r = scanInt();
-			s1 = scanInt();
-			return new LinInstruction(label, r, s1);
 			
 		
-		case "out":
-			s1 = scanInt();
-			return new OutInstruction(label, s1);  
+			//return new LinInstruction(label, r, s1);
 			
-		case "bnz":
-			s1 = scanInt(); 
-			label2 = scan(); 
+		
+	
+			//return new OutInstruction(label, s1);  
 			
-			return new BnzInstruction(label, s1, label2);  
+	
 			
-		}
-
+			//return new BnzInstruction(label, s1, label2);  
+			
+	
 	
 
 		return null;
