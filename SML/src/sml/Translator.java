@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -105,15 +106,52 @@ public class Translator {
 			String sml = "sml."; //required to look up via the package - doesnt work without
 			//class.forname - requires try/catch
 			try {
-				
+					String paramTempS;
+					int paramTempI;
 					Class<?> holdClass = Class.forName(sml + className); //error thrown on just class
 					System.out.println("DEBUG - HoldClass: " + holdClass);
 					Constructor<?> [] obj1 = holdClass.getConstructors();  //Instruction classes have more than one constructor
 					Constructor<?> con = obj1[1]; //should be the constructor with arguments not default.
 					
-					Object obj2 = con.newInstance("f0", 0, 6);  //Hardcoded test of new LinInstruction
+					Parameter [] param = con.getParameters(); //need to identify parameters that this constructor takes
+					int paramSize = param.length;
+					Object [] paramsToSend = new Object[paramSize]; //create an array of objects that we send to the Class, as they could be string or int
+					
+					//Iterate through the parameter (param[]) and obtain the correct amount and type in order to sent to the instruction
+					for (int i = 0; i < paramSize; i++)
+					{						
+						System.out.println("DEBUG - Param:" + i + " " + param[i].getType());
+						//set first as Label - as all 0 params = Label
+						if (i == 0)
+						{
+							paramsToSend[0] = label;						
+						}
+						else if (i > 0)
+						{
+							//Extract the next object from the parameters types and then decide which one to return from scan/scanInt
+							if(param[i].getType().equals("java.lang.String"))
+							{
+								paramTempS = scan();
+								paramsToSend[i] = paramTempS;
+								System.out.println("DEBUG - String identified");
+							}
+							else if (param[i].getType().equals(int.class))
+							{
+								paramTempI = scanInt();
+								paramsToSend[i] = paramTempI;
+								System.out.println("DEBUG - int identified");
+							}
+							else
+							{
+								System.out.println("DEBUG - No Types Found ");
+							}
+						}
+					}
+					
+					Object obj2 = con.newInstance(paramsToSend);  //create a new instance of the Instruction with the correct parameters identified
 					System.out.println("Debug - Instruction: " + con);
 			
+					//return the instruction - we could create new instance in the return but easier to read as is
 				  return (Instruction)obj2;
 				} 
 			catch (ClassNotFoundException | SecurityException | InstantiationException |

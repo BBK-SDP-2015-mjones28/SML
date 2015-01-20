@@ -1,3 +1,11 @@
 f0 lin 0 6
-
-
+f1 lin 1 9
+f2 add 2 0 1
+f3 add 3 2 1
+f4 sub 4 3 1
+f5 sub 5 3 4
+f6 lin 6 3
+f7 div 7 1 6
+f8 mul 8 2 7
+f9 sub 8 8 2
+f10 bnz 8 f9
