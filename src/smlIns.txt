@@ -1,0 +1,7 @@
+f0 lin 0 6
+f1 lin 1 1
+f2 sub 2 0 1
+f3 sub 2 2 1
+f4 bnz 2 f3
+f5 out 2
+
