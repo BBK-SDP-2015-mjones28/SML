@@ -91,23 +91,23 @@ public class Translator {
 		if(line.equals(""))
 			{
 				return null;
-			} 
+			} 			
 		
 			//Find the class of each instruction - obtain instruction, 
 			//capitalise the first Letter, and concatenate with "Instruction"		
 			String instruction = scan();		
 			StringBuilder returnString = new StringBuilder(instruction.substring(0, 1).toUpperCase() + instruction.substring(1));
-			returnString.append("Instruction");		
-			String className = returnString.toString(); 						
-			
-			String sml = "sml."; //required to look up via the package - doesnt work without
+			String sml = "sml."; 
+			returnString.append("Instruction");	
+			returnString.insert(0, sml);
+			String className = returnString.toString(); 							
 			
 			try {
 					String paramTempS;
 					int paramTempI;
-					Class<?> holdClass = Class.forName(sml + className); 
-					Constructor<?> [] obj1 = holdClass.getConstructors();  
-					Constructor<?> con = obj1[1]; 					
+					Class<?> holdClass = Class.forName(className); 
+					Constructor<?> [] obj = holdClass.getConstructors();  
+					Constructor<?> con = obj[1]; 					
 					Parameter [] param = con.getParameters(); 
 					int paramSize = param.length;
 					Object [] paramsToSend = new Object[paramSize]; 
