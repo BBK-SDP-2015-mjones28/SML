@@ -12,6 +12,7 @@ import java.util.Scanner;
 /*
  * The translator of a <b>S</b><b>M</b>al<b>L</b> program.
  */
+
 public class Translator {
 
 	// word + line is the part of the current line that's not yet processed
@@ -96,15 +97,12 @@ public class Translator {
 			//Find the class of each instruction - obtain instruction, 
 			//capitalise the first Letter, and concatenate with "Instruction"		
 			String instruction = scan();		
-			StringBuilder returnString = new StringBuilder(instruction.substring(0, 1).toUpperCase() + instruction.substring(1));
-			String sml = "sml."; 
+			StringBuilder returnString = new StringBuilder("sml." + instruction.substring(0, 1).toUpperCase() + instruction.substring(1));
 			returnString.append("Instruction");	
-			returnString.insert(0, sml);
-			String className = returnString.toString(); 							
+			String className = returnString.toString(); 	
+				
 			
 			try {
-					String paramTempS;
-					int paramTempI;
 					Class<?> holdClass = Class.forName(className); 
 					Constructor<?> [] obj = holdClass.getConstructors();  
 					Constructor<?> con = obj[1]; 					
@@ -112,30 +110,23 @@ public class Translator {
 					int paramSize = param.length;
 					Object [] paramsToSend = new Object[paramSize]; 
 					
+					//removed need to check each time - stipulate position 0 as label straight away - as it will always be position 0
+					paramsToSend[0] = label;	
 					//Iterate through the parameter (param[]) and obtain the correct amount
 					//and type in order to sent to the instruction class
 					//set first as parameter to send to class as Label
-					for (int i = 0; i < paramSize; i++)
+					for (int i = 1; i < paramSize; i++)
 					{							
-						if (i == 0)
-						{
-							paramsToSend[0] = label;						
-						}
-						else if (i > 0)
-						{
 							//Extract the next object from the parameters types 
 							//decide which object type to return from scan/scanInt
 							if(param[i].getType().equals(java.lang.String.class))
 							{
-								paramTempS = scan();
-								paramsToSend[i] = paramTempS;
+								paramsToSend[i] = scan();
 							}
 							else if (param[i].getType().equals(int.class))
 							{
-								paramTempI = scanInt();
-								paramsToSend[i] = paramTempI;
+								paramsToSend[i] = scanInt();
 							}						
-						}
 					}
 								
 				  //return the instruction
